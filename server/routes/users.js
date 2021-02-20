@@ -29,7 +29,7 @@ router.post('/register', async (req, res, next) => {
             const ranStr = Math.random().toString(36).substr(5, 10);
         
             const mailOptions = {
-                from: 'wooseongham@gmail.com',
+                from: process.env.USER,
                 to: email,
                 subject: '[관리자 가입] 이메일 인증 입니다.]',
                 text: `이메일 코드는 우측에 있습니다. [${ranStr}]`,
