@@ -32,7 +32,10 @@ export function loginUser(dataToSubmit) {
 }
 
 export function auth() {
-    const request = axios.get(`${USER_SERVER}/auth`)
+    const token = window.sessionStorage.getItem("token");
+    const request = axios.get(`${USER_SERVER}/auth`, {
+        headers: { authorization: token }, 
+    })
         .then(response => response.data);
 
     return {

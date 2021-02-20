@@ -5,6 +5,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Form, Icon, Input, Button, Checkbox, Typography } from 'antd';
 import { useDispatch } from "react-redux";
+import './LoginPage.css';
 
 const { Title } = Typography;
 
@@ -29,11 +30,11 @@ function LoginPage(props) {
       }}
       validationSchema={Yup.object().shape({
         email: Yup.string()
-          .email('Email is invalid')
-          .required('Email is required'),
+          .email('이메일형식이 불일치합니다.')
+          .required('이메일을 입력해주세요.'),
         password: Yup.string()
-          .min(6, 'Password must be at least 6 characters')
-          .required('Password is required'),
+          .min(6, '6자리 이상입력해주세요.')
+          .required('비밀번호를 입력해주세요.'),
       })}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
@@ -44,20 +45,22 @@ function LoginPage(props) {
 
           dispatch(loginUser(dataToSubmit))
             .then(response => {
+            console.log("🚀 ~ file: LoginPage.js ~ line 48 ~ setTimeout ~ response", response)
               if (response.payload.loginSuccess) {
-                window.localStorage.setItem('userId', response.payload.userId);
+                window.localStorage.setItem('email', response.payload.email);
+                window.sessionStorage.setItem('token', response.payload.token);
                 if (rememberMe === true) {
-                  window.localStorage.setItem('rememberMe', values.id);
+                  window.localStorage.setItem('rememberMe', values.email);
                 } else {
                   localStorage.removeItem('rememberMe');
                 }
                 props.history.push("/");
               } else {
-                setFormErrorMessage('Check out your Account or Password again')
+                setFormErrorMessage('이메일 및 비밀번호를 다시 확인해주세요.')
               }
             })
             .catch(err => {
-              setFormErrorMessage('Check out your Account or Password again')
+              setFormErrorMessage('이메일 및 비밀번호를 다시 확인해주세요.')
               setTimeout(() => {
                 setFormErrorMessage("")
               }, 3000);
@@ -133,6 +136,9 @@ function LoginPage(props) {
                   <Button type="primary" htmlType="submit" className="login-form-button" style={{ minWidth: '100%' }} disabled={isSubmitting} onSubmit={handleSubmit}>
                     Log in
                 </Button>
+                </div>
+                <div>
+                  <a id="apple-login-btn">Apple 로그인</a>
                 </div>
                 Or <a href="/register">register now!</a>
               </Form.Item>

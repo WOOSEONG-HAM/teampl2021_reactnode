@@ -1,0 +1,14 @@
+#apple-login-btn {
+  display: block;
+  padding: 12px 0 12px;
+  margin-top: 10px;
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 22px;
+  border: 1px solid #bfbfbf;
+  border-radius: 6px;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+  color: #000;
+}

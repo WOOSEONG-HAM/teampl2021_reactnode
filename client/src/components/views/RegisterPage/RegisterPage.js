@@ -9,6 +9,7 @@ import {
   Form,
   Input,
   Button,
+  message,
 } from 'antd';
 
 const formItemLayout = {
@@ -41,25 +42,22 @@ function RegisterPage(props) {
     <Formik
       initialValues={{
         email: '',
-        lastName: '',
         name: '',
         password: '',
         confirmPassword: ''
       }}
       validationSchema={Yup.object().shape({
         name: Yup.string()
-          .required('Name is required'),
-        lastName: Yup.string()
-          .required('Last Name is required'),
+          .required('이름을 입력해주세요.'),
         email: Yup.string()
-          .email('Email is invalid')
-          .required('Email is required'),
+          .email('잘못된 형식의 이메일입니다.')
+          .required('이메일을 입력해주세요.'),
         password: Yup.string()
-          .min(6, 'Password must be at least 6 characters')
-          .required('Password is required'),
+          .min(6, '비밀번호는 6자리 이상으로 입력해주세요.')
+          .required('비밀번호를 입력해주세요.'),
         confirmPassword: Yup.string()
-          .oneOf([Yup.ref('password'), null], 'Passwords must match')
-          .required('Confirm Password is required')
+          .oneOf([Yup.ref('password'), null], '비밀번호가 일치하지 않습니다.')
+          .required('비밀번호를 입력해주세요.')
       })}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(() => {
@@ -68,17 +66,19 @@ function RegisterPage(props) {
             email: values.email,
             password: values.password,
             name: values.name,
-            lastname: values.lastname,
             image: `http://gravatar.com/avatar/${moment().unix()}?d=identicon`
           };
 
           dispatch(registerUser(dataToSubmit)).then(response => {
             if (response.payload.success) {
-              props.history.push("/login");
+              props.history.push({
+                pathname: "/emailCheck",
+                state: {email: response.payload.email}
+              });
             } else {
               alert(response.payload.err.errmsg)
             }
-          })
+          }).catch(error => message.error('회원가입중 오류가 발생하였습니다.'));
 
           setSubmitting(false);
         }, 500);
@@ -98,13 +98,13 @@ function RegisterPage(props) {
         } = props;
         return (
           <div className="app">
-            <h2>Sign up</h2>
+            <h2>회원가입</h2>
             <Form style={{ minWidth: '375px' }} {...formItemLayout} onSubmit={handleSubmit} >
 
-              <Form.Item required label="Name">
+              <Form.Item required label="이름">
                 <Input
                   id="name"
-                  placeholder="Enter your name"
+                  placeholder="이름을 입력해주세요."
                   type="text"
                   value={values.name}
                   onChange={handleChange}
@@ -118,27 +118,10 @@ function RegisterPage(props) {
                 )}
               </Form.Item>
 
-              <Form.Item required label="Last Name">
-                <Input
-                  id="lastName"
-                  placeholder="Enter your Last Name"
-                  type="text"
-                  value={values.lastName}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={
-                    errors.lastName && touched.lastName ? 'text-input error' : 'text-input'
-                  }
-                />
-                {errors.lastName && touched.lastName && (
-                  <div className="input-feedback">{errors.lastName}</div>
-                )}
-              </Form.Item>
-
-              <Form.Item required label="Email" hasFeedback validateStatus={errors.email && touched.email ? "error" : 'success'}>
+              <Form.Item required label="이메일" hasFeedback validateStatus={errors.email && touched.email ? "error" : 'success'}>
                 <Input
                   id="email"
-                  placeholder="Enter your Email"
+                  placeholder="이메일을 입력해주세요"
                   type="email"
                   value={values.email}
                   onChange={handleChange}
@@ -152,10 +135,10 @@ function RegisterPage(props) {
                 )}
               </Form.Item>
 
-              <Form.Item required label="Password" hasFeedback validateStatus={errors.password && touched.password ? "error" : 'success'}>
+              <Form.Item required label="비밀번호" hasFeedback validateStatus={errors.password && touched.password ? "error" : 'success'}>
                 <Input
                   id="password"
-                  placeholder="Enter your password"
+                  placeholder="비밀번호를 입력해주세요."
                   type="password"
                   value={values.password}
                   onChange={handleChange}
@@ -169,10 +152,10 @@ function RegisterPage(props) {
                 )}
               </Form.Item>
 
-              <Form.Item required label="Confirm" hasFeedback>
+              <Form.Item required label="비밀번호 확인" hasFeedback>
                 <Input
                   id="confirmPassword"
-                  placeholder="Enter your confirmPassword"
+                  placeholder="비밀번호를 입력해주세요."
                   type="password"
                   value={values.confirmPassword}
                   onChange={handleChange}
@@ -185,10 +168,27 @@ function RegisterPage(props) {
                   <div className="input-feedback">{errors.confirmPassword}</div>
                 )}
               </Form.Item>
+              
+              {/* <Form.Item required label="추천인 아이디">
+                <Input
+                  id="recommender"
+                  placeholder="추천인ID를 입력해주세요."
+                  type="text"
+                  value={values.name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={
+                    errors.name && touched.name ? 'text-input error' : 'text-input'
+                  }
+                />
+                {errors.name && touched.name && (
+                  <div className="input-feedback">{errors.name}</div>
+                )}
+              </Form.Item> */}
 
               <Form.Item {...tailFormItemLayout}>
                 <Button onClick={handleSubmit} type="primary" disabled={isSubmitting}>
-                  Submit
+                  가입하기
                 </Button>
               </Form.Item>
             </Form>

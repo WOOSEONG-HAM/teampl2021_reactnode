@@ -1,20 +1,21 @@
-const { User } = require('../models/User');
+const jwt = require('jsonwebtoken');
 
 let auth = (req, res, next) => {
-  let token = req.cookies.w_auth;
-
-  User.findByToken(token, (err, user) => {
-    if (err) throw err;
-    if (!user)
-      return res.json({
-        isAuth: false,
-        error: true
+  try {
+    req.decoded = jwt.verify(req.headers.authorization, process.env.JWTSECRET);
+    return next();
+  } catch (error) {
+    if(error.name === 'TokenExpiredError') {
+      return res.status(419).json({
+        code: 419,
+        message: '토큰이 만료되었습니다.'
       });
-
-    req.token = token;
-    req.user = user;
-    next();
-  });
+    }
+    return res.status(401).json({
+      code: 401,
+      message: '유효하지 않은 토큰입니다.'
+    });
+  }
 };
 
 module.exports = { auth };

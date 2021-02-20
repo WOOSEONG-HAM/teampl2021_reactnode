@@ -1,16 +1,27 @@
-Hello, My Friends  
-Thank you for having interest in this repository ! 
+# teampl2021_reactnode
+쇼핑몰
 
-To use this application, 
+### 의존성 설치 
 
-1. make dev.js file inside config folder 
-2. put mongoDB info into dev.js file 
-3. Type  " npm install " inside the root directory  ( Download Server Dependencies ) 
-4. Type " npm install " inside the client directory ( Download Front-end Dependencies )
+1. teampl2021_reactnode
 
-If you have problem, feel free to ask me ^^ 
+```sh
+npm install
+```
 
-You can watch the tutorial for this app.
+2. teampl2021_reactnode/client
+
+```sh
+npm install
+```
+
+### 개발 실행 방법
+
+```sh
+npm run dev
+```
+
+### 참고 영상
 
 https://www.youtube.com/watch?v=zaWtIkJgah4&t=5569s
 
