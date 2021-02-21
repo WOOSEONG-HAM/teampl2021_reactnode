@@ -16,7 +16,7 @@ function DetailProductPage(props) {
                 setProduct(response.data[0])
             })
 
-    }, [])
+    }, [productId])
 
     const addToCartHandler = (productId) => {
         dispatch(addToCart(productId))

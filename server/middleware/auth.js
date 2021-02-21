@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 let auth = (req, res, next) => {
   try {
+    console.log(req.decoded);
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWTSECRET);
     return next();
   } catch (error) {

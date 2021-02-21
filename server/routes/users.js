@@ -26,13 +26,24 @@ router.post('/register', async (req, res, next) => {
             });
         } else {
 
-            const ranStr = Math.random().toString(36).substr(5, 10);
-        
+            const ranStr = Math.random().toString(36).substr(7, 10);
+            console.log('email', email, process.env.USER);
             const mailOptions = {
                 from: process.env.USER,
                 to: email,
                 subject: '[관리자 가입] 이메일 인증 입니다.]',
-                text: `이메일 코드는 우측에 있습니다. [${ranStr}]`,
+                // text: `이메일 코드는 우측에 있습니다. [${ranStr}]`,
+                html: `
+                <div style="margin: auto; width: 80%; text-align: center;">
+                    <h1>${name}님, 안녕하세요!</h1>
+                    <p style="color:red">OOO쇼핑몰에 가입해 주셔서 감사합니다.</p>
+                    <p>아래 코드를 회원가입 화면에 입력하여 가입을 완료하여 주십시오.</p>
+                    <p>아래의 코드가 유효하지 않을 경우, 재발송을 하여 새로운 코드를 입력해 주십시오.</p>
+                    <div style="padding: 25px 0; background-color: #eee;">${ranStr}</div>
+                    <p>기타 궁금하신 사항이 있으시면 고객센터 전화(02-0000-0000)로 문의해주세요.</p>
+                    <p>더욱 좋은 품질과 서비스를 제공하도록 노력하겠습니다.</p>
+                </div>
+                `
             };
         
              smtpTransport.sendMail(mailOptions, (error, responses) => {
@@ -125,7 +136,6 @@ router.post("/login", async (req, res) => {
 
         const result = await bcrypt.compare(req.body.password, emailCheck.password);
         if (result) {
-            console.log('성공')
             const token = jwt.sign({
                 email: emailCheck.email,
                 name: emailCheck.name,
@@ -140,21 +150,17 @@ router.post("/login", async (req, res) => {
                 token,
             });
         }
-        console.log('실패2');
         return res.status(200).json({
             loginSuccess: false,
             message: "passwordError"
         });
 });
 
-// router.get("/logout", auth, (req, res) => {
-//     User.findOneAndUpdate({ _id: req.user._id }, { token: "", tokenExp: "" }, (err, doc) => {
-//         if (err) return res.json({ success: false, err });
-//         return res.status(200).send({
-//             success: true
-//         });
-//     });
-// });
+router.get("/logout", auth, (req, res) => {
+    return res.status(200).json({
+        success: true
+    });
+});
 
 
 // router.get('/addToCart', auth, (req, res) => {

@@ -45,7 +45,10 @@ export function auth() {
 }
 
 export function logoutUser() {
-    const request = axios.get(`${USER_SERVER}/logout`)
+    const token = window.sessionStorage.getItem("token");
+    const request = axios.get(`${USER_SERVER}/logout`, {
+        headers: { authorization: token }, 
+    })
         .then(response => response.data);
 
     return {
