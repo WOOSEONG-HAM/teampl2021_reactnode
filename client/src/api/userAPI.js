@@ -16,3 +16,16 @@ export const emailCheckAPI = function (option, callback) {
       callback(err);
     });
 };
+
+export const kakaoLogin = function () {
+  axios({
+    method: 'get',
+    url: `http://localhost:5000/api/users/kakao`,
+  })
+    .then(function (response) {
+      console.log('카카오: ', response);
+    })
+    .catch(err => {
+    console.log("🚀 카카오 에러", err)
+    });
+};

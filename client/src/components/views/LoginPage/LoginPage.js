@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import { Form, Icon, Input, Button, Checkbox, Typography } from 'antd';
 import { useDispatch } from "react-redux";
 import './LoginPage.css';
+import { kakaoLogin } from '../../../api/userAPI';
 
 const { Title } = Typography;
 
@@ -19,6 +20,10 @@ function LoginPage(props) {
   const handleRememberMe = () => {
     setRememberMe(!rememberMe)
   };
+
+  const kakaoLoginCall = () => {
+    kakaoLogin();
+  }
 
   const initialEmail = localStorage.getItem("rememberMe") ? localStorage.getItem("rememberMe") : '';
 
@@ -136,6 +141,9 @@ function LoginPage(props) {
                   <Button type="primary" htmlType="submit" className="login-form-button" style={{ minWidth: '100%', height: '46px' }} disabled={isSubmitting} onSubmit={handleSubmit}>
                     로그인
                   </Button>
+                </div>
+                <div onClick={kakaoLoginCall} >
+                  <img src="./img/logo/kakao.png" style={{marginTop: '10px', width:'100%', height:'46px', cursor:'pointer'}}/>
                 </div>
                 <div>
                   <a id="apple-login-btn"><img src="./img/logo/logo.svg"/>Apple 로그인</a>
