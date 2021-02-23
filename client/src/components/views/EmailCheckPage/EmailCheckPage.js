@@ -3,7 +3,7 @@ import { useLocation } from "react-router";
 import { Button, message } from 'antd';
 import './EmailCheckPage.css';
 
-import { emailCheckAPI } from '../../../api/userAPI';
+import { emailCheckAPI, reSendEmailAPI } from '../../../api/userAPI';
 
 function EmailCheck(props){
   const location = useLocation();
@@ -27,6 +27,15 @@ function EmailCheck(props){
     })
   };
 
+  const reSendEmail = () => {
+    let option = {
+      email
+    };
+    reSendEmailAPI(option, function(res){
+      console.log('이메일 재전송 결과', res);
+    });
+  }
+
   return(
     <>
       <div id="emailCheck-container">
@@ -39,7 +48,7 @@ function EmailCheck(props){
             <p>이메일 인증 코드</p>
             <div>
               <input type="text" id="emailCheck-code-input" onChange={onChange}/>
-              <Button id="emailCheck-resend-btn" size={'large'}>코드 재전송</Button>
+              <Button id="emailCheck-resend-btn" size={'large'} onClick={reSendEmail}>코드 재전송</Button>
             </div>
             <div id="emailCheck-codeM-box">
               <p>{email}로 전송된 6자리 코드를 입력해주세요.</p>

@@ -3,10 +3,12 @@ import { withRouter } from "react-router-dom";
 import { loginUser } from "../../../_actions/user_actions";
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Form, Icon, Input, Button, Checkbox, Typography } from 'antd';
+import { Form, Icon, Input, Button, Checkbox, Typography, message } from 'antd';
 import { useDispatch } from "react-redux";
 import './LoginPage.css';
 import { kakaoLogin } from '../../../api/userAPI';
+import AppleLogin from 'react-apple-login'
+import KaKaoLogin from 'react-kakao-login';
 
 const { Title } = Typography;
 
@@ -14,18 +16,30 @@ function LoginPage(props) {
   const dispatch = useDispatch();
   const rememberMeChecked = localStorage.getItem("rememberMe") ? true : false;
 
-  const [formErrorMessage, setFormErrorMessage] = useState('')
-  const [rememberMe, setRememberMe] = useState(rememberMeChecked)
+  const [formErrorMessage, setFormErrorMessage] = useState('');
+  const [rememberMe, setRememberMe] = useState(rememberMeChecked);
 
   const handleRememberMe = () => {
     setRememberMe(!rememberMe)
   };
 
-  const kakaoLoginCall = () => {
-    kakaoLogin();
-  }
-
   const initialEmail = localStorage.getItem("rememberMe") ? localStorage.getItem("rememberMe") : '';
+
+  const responseKaKao = (res) => {
+    let option = {
+      snsId: String(res.profile.id),
+      email: res.profile.kakao_account.email ? res.profile.kakao_account.email : '',
+      name: res.profile.properties.nickname,
+    }
+
+    kakaoLogin(option, function(response){
+      if(response.loginSuccess){
+        window.localStorage.setItem('email', response.userId);
+        window.sessionStorage.setItem('token', response.token);
+        props.history.push("/");
+      }
+    });
+  };
 
   return (
     <Formik
@@ -50,8 +64,7 @@ function LoginPage(props) {
 
           dispatch(loginUser(dataToSubmit))
             .then(response => {
-            console.log("🚀 ~ file: LoginPage.js ~ line 48 ~ setTimeout ~ response", response)
-              if (response.payload.loginSuccess) {
+              if (response.payload.loginSuccess && response.payload.emailCheck) {
                 window.localStorage.setItem('email', response.payload.email);
                 window.sessionStorage.setItem('token', response.payload.token);
                 if (rememberMe === true) {
@@ -60,12 +73,23 @@ function LoginPage(props) {
                   localStorage.removeItem('rememberMe');
                 }
                 props.history.push("/");
+              } else if(response.payload.loginSuccess && !response.payload.emailCheck) {
+                props.history.push({
+                  pathname: "/emailCheck",
+                  state: {email: response.payload.email}
+                });
+              } else if(!response.payload.emailCheck && response.payload.code === '401'){
+                message.warning('인증되지 않은 이메일입니다. 이메일 인증을 진행해주세요.');
+                props.history.push({
+                  pathname: "/emailCheck",
+                  state: {email: response.payload.email}
+                });
               } else {
-                setFormErrorMessage('이메일 및 비밀번호를 다시 확인해주세요.')
+                setFormErrorMessage('이메일 및 비밀번호를 다시 확인해주세요.');
               }
             })
             .catch(err => {
-              setFormErrorMessage('이메일 및 비밀번호를 다시 확인해주세요.')
+              setFormErrorMessage('이메일 및 비밀번호를 다시 확인해주세요.');
               setTimeout(() => {
                 setFormErrorMessage("")
               }, 3000);
@@ -142,12 +166,14 @@ function LoginPage(props) {
                     로그인
                   </Button>
                 </div>
-                <div onClick={kakaoLoginCall} >
+                {/* <div onClick={kakaoLoginCall} >
                   <img src="./img/logo/kakao.png" style={{marginTop: '10px', width:'100%', height:'46px', cursor:'pointer'}}/>
-                </div>
+                </div> */}
+                <KaKaoLogin jsKey={'7578f064e9e8b2ef07713c0465a566e0'} buttonText='카카오 계정으로 로그인' onSuccess={responseKaKao} getProfile={true} style={{marginTop: '10px', width:'100%', backgroundColor:'#FEE500', border: '1px solid #FEE500', borderRadius: '6px'}}/>
                 <div>
                   <a id="apple-login-btn"><img src="./img/logo/logo.svg"/>Apple 로그인</a>
                 </div>
+                <AppleLogin clientId="com.study.reactnode" redirectURI="http://teampartner.cafe24app.com" designProp={{width:350, height:46}} />
                 아직 회원이 아니라면 <a href="/register">회원가입</a>
               </Form.Item>
             </form>

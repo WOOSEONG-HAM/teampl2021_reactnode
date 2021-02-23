@@ -1,13 +1,22 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
-import { Menu, Icon, Badge } from 'antd';
+import { Menu, Icon, Badge, message } from 'antd';
 import axios from 'axios';
 import { USER_SERVER } from '../../../Config';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from "react-redux";
 
 function RightMenu(props) {
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.user);
+
+  
+  function kakaoLogout() {
+    window.Kakao.Auth.logout(function(response) {
+      if(response)
+        window.sessionStorage.clear();
+        message.success('로그아웃에 성공하였습니다.');
+    }); 
+  }
 
   const logoutHandler = () => {
     const token = window.sessionStorage.getItem("token");
@@ -17,6 +26,7 @@ function RightMenu(props) {
       console.log('***', response);
       if (response.status === 200) {
         window.sessionStorage.removeItem("token");
+        kakaoLogout();
         props.history.push("/login");
       } else {
         alert('Log Out Failed')
