@@ -23,7 +23,6 @@ function RightMenu(props) {
     axios.get(`${USER_SERVER}/logout`, {
       headers: { authorization: token }, 
   }).then(response => {
-      console.log('***', response);
       if (response.status === 200) {
         window.sessionStorage.removeItem("token");
         kakaoLogout();

@@ -65,6 +65,7 @@ function LoginPage(props) {
           dispatch(loginUser(dataToSubmit))
             .then(response => {
               if (response.payload.loginSuccess && response.payload.emailCheck) {
+                message.success('로그인에 성공하였습니다.');
                 window.localStorage.setItem('email', response.payload.email);
                 window.sessionStorage.setItem('token', response.payload.token);
                 if (rememberMe === true) {
@@ -169,7 +170,7 @@ function LoginPage(props) {
                 {/* <div onClick={kakaoLoginCall} >
                   <img src="./img/logo/kakao.png" style={{marginTop: '10px', width:'100%', height:'46px', cursor:'pointer'}}/>
                 </div> */}
-                <KaKaoLogin jsKey={'7578f064e9e8b2ef07713c0465a566e0'} buttonText='카카오 계정으로 로그인' onSuccess={responseKaKao} getProfile={true} style={{marginTop: '10px', width:'100%', backgroundColor:'#FEE500', border: '1px solid #FEE500', borderRadius: '6px'}}/>
+                <KaKaoLogin jsKey={'7578f064e9e8b2ef07713c0465a566e0'} buttonText='카카오 계정으로 로그인' onSuccess={responseKaKao} getProfile={true} style={{marginTop: '10px', width:'100%', backgroundColor:'#FEE500', border: '1px solid #FEE500', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'}}/>
                 <div>
                   <a id="apple-login-btn"><img src="./img/logo/logo.svg"/>Apple 로그인</a>
                 </div>

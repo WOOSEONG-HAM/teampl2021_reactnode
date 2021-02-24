@@ -24,7 +24,6 @@ router.post('/register', async (req, res, next) => {
         } else {
 
             const ranStr = Math.random().toString(36).substr(7, 10);
-            console.log('email', email, process.env.USER);
             const mailOptions = {
                 from: process.env.USER,
                 to: email,
@@ -74,7 +73,6 @@ router.post('/register', async (req, res, next) => {
 router.post('/sendEmail', async (req, res, next) => {
 
     const { email } = req.body;
-    console.log("🚀 ~ file: users.js ~ line 79 ~ router.post ~ email", email)
     const ranStr = Math.random().toString(36).substr(7, 10);
     const mailOptions = {
         from: process.env.USER,
@@ -255,9 +253,7 @@ router.post('/kakao', async (req, res) => {
 });
 
 router.post('/apple', async (req, res) => {
-console.log("🚀 테스트", req.body)
-    
-
+    console.log("🚀애플 로그인 요청값: ", req.body);
 });
 
 

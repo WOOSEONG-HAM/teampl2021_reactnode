@@ -71,6 +71,7 @@ function RegisterPage(props) {
 
           dispatch(registerUser(dataToSubmit)).then(response => {
             if (response.payload.success) {
+              message.success(`${response.payload.email}로 이메일이 전송되었습니다.`);
               props.history.push({
                 pathname: "/emailCheck",
                 state: {email: response.payload.email}
@@ -78,7 +79,9 @@ function RegisterPage(props) {
             } else {
               alert(response.payload.err.errmsg)
             }
-          }).catch(error => message.error('회원가입중 오류가 발생하였습니다.'));
+          }).catch(error => {
+            message.error('사용할 수 없는 이메일입니다.');
+          });
 
           setSubmitting(false);
         }, 500);
